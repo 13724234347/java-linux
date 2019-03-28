@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	<context:component-scan base-package="cn.yr"></context:component-scan>
+	<!-- 只需要加入这一句就可以 -->
+	
+	 <!-- 导入外部properties -->
+    <context:property-placeholder location="classpath:memcached.properties"/>
+
+	<!-- 客户端：java_memcached-release_2.6.3 -->
+	<bean id="memcachedClient" class="net.spy.memcached.spring.MemcachedClientFactoryBean">
+		<!-- 可以设置多个memcached服务器 -->
+		<property name="servers">
+			<value>${memcache.server}</value>
+		</property>
+		<!-- 指定要使用的协议 -->
+		<property name="protocol" value="TEXT"></property>
+		<!-- 设置默认转码器 -->
+		<property name="transcoder">
+				<bean class="net.spy.memcached.transcoders.SerializingTranscoder">
+						<property name="compressionThreshold" value="1024"></property>
+				</bean>
+		</property>
+		<property name="opTimeout" value="30000"></property>
+		<property name="timeoutExceptionThreshold" value="1998"></property>
+		<property name="locatorType" value="CONSISTENT"></property>
+		<property name="failureMode" value="Redistribute"></property>
+		<!-- 是否使用Nagle算法 -->
+		<property name="useNagleAlgorithm" value="false"></property>
+	</bean>
+</beans>
